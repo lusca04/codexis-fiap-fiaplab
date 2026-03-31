@@ -18,9 +18,30 @@ CREATE TABLE IF NOT EXISTS Users (
     Curso                   TEXT       ,
     Periodo                 TEXT       ,
     Dt_Formacao_Esperado    DATETIME   ,
-    Dt_Cpu                  DATETIME   NOT NULL 
+    Dt_Cpu                  DATETIME   NOT NULL,
+    Id_Usuario              INT        INDENTITY(1,1)   
+    Ind_Ativo               BOOLEAN    NOT NULL = 1
 );
 """)
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Horarios (
+    Disponivel              BOOLEAN    NOT NULL = 0,
+    Horario                 DATETIME   NOT NULL,
+    Id_user                 INT        NOT NULL,
+    Id_user_relacionado     INT        NOT NULL
+);
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Historico (
+    Disponivel              BOOLEAN    NOT NULL = 0,
+    Horario                 DATETIME   NOT NULL,
+    Id_user                 INT        NOT NULL,
+    Id_user_relacionado     INT        NOT NULL
+);
+""")
+
 
 conn.commit()
 conn.close()

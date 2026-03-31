@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from datetime import datetime
-import sqlite3
+import sqlite3, json
 
 conn = sqlite3.connect("fiaplab.db")
 cursor = conn.cursor()
@@ -14,7 +14,7 @@ def Login():
         Rm = request.form.get("Rm")
 
         if not all([Cpf, Rm]):
-                    return jsonify({"erro": "Cpf,Rm são obrigatórios."}), 400
+                    return jsonify({"erro": "Cpf, Rm são obrigatórios."}), 400
 
         cursor.execute("""
             Select Cpf, Nome, Email, Rm, Ocupacao, Dt_Nascimento, Curso, 
@@ -39,6 +39,10 @@ def Login():
                 "Dt_Formacao_Esperado": resultado[8],
                 "Dt_Cpu": resultado[9]
             } 
+            
+            with open("C:\Users\lucas\Downloads\CP1-Engenharia_de_Software\codexis-fiap-fiaplab\.cache\userLogin.json","w") as arquivo:
+                 json.dump(usuario, arquivo , indent = 4)
+
             return jsonify({"mensagem": f"Bem-Vindo {resultado[4]}:{resultado[1]}"}), 200
         else:
             return jsonify({"erro": "Usuário não cadastrado"}), 404
