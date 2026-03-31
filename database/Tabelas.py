@@ -1,47 +1,61 @@
 import sqlite3
 
-conn = sqlite3.connect("fiaplab.db")
-cursor = conn.cursor()
+DB_NAME = "fiaplab.db"
 
-cursor.execute("""
-DROP TABLE IF EXISTS Users;
-""")
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS Users (
-    Cpf                     DECIMAL    UNIQUE,
-    Nome                    TEXT       NOT NULL,
-    Email                   TEXT       NOT NULL,
-    Rm                      DECIMAL    UNIQUE NOT NULL,
-    Ocupacao                TEXT       NOT NULL,
-    Dt_Nascimento           DATETIME   NOT NULL,
-    Curso                   TEXT       ,
-    Periodo                 TEXT       ,
-    Dt_Formacao_Esperado    DATETIME   ,
-    Dt_Cpu                  DATETIME   NOT NULL,
-    Id_Usuario              INT        INDENTITY(1,1)   
-    Ind_Ativo               BOOLEAN    NOT NULL = 1
-);
-""")
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS Horarios (
-    Disponivel              BOOLEAN    NOT NULL = 0,
-    Horario                 DATETIME   NOT NULL,
-    Id_user                 INT        NOT NULL,
-    Id_user_relacionado     INT        NOT NULL
-);
-""")
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS Historico (
-    Disponivel              BOOLEAN    NOT NULL = 0,
-    Horario                 DATETIME   NOT NULL,
-    Id_user                 INT        NOT NULL,
-    Id_user_relacionado     INT        NOT NULL
-);
-""")
+def get_connection():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
 
 
-conn.commit()
-conn.close()
+def init_db():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Users (
+        Id_Usuario              INTEGER     PRIMARY KEY     AUTOINCREMENT,
+        Cpf                     TEXT        UNIQUE,
+        Nome                    TEXT        NOT NULL,
+        Email                   TEXT        NOT NULL        UNIQUE,
+        Rm                      TEXT        UNIQUE          NOT NULL,
+        Ocupacao                TEXT        NOT NULL,
+        Dt_Nascimento           TEXT        NOT NULL,
+        Curso                   TEXT,
+        Periodo                 TEXT,
+        Dt_Formacao_Esperado    TEXT,
+        Dt_Cpu                  TEXT        NOT NULL,
+        Ind_Ativo               BOOLEAN     NOT NULL        DEFAULT 1
+    );  
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Horarios (
+        Id                      INTEGER     PRIMARY KEY     AUTOINCREMENT,
+        Disponivel              BOOLEAN     NOT NULL        DEFAULT 0,
+        Horario                 TEXT        NOT NULL,
+        Id_user                 INTEGER     NOT NULL,
+        Id_user_relacionado     INTEGER,
+        
+        FOREIGN KEY (Id_user) REFERENCES Users(Id_Usuario),
+        FOREIGN KEY (Id_user_relacionado) REFERENCES Users(Id_Usuario)
+    );
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def reset_db():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DROP TABLE IF EXISTS Historico;")
+    cursor.execute("DROP TABLE IF EXISTS Horarios;")
+    cursor.execute("DROP TABLE IF EXISTS Users;")
+
+    conn.commit()
+    conn.close()
+
+    init_db()
