@@ -21,6 +21,7 @@ pip install -r requirements.txt
 python main.py
 
 ## 📂 Estrutura do Projeto
+```text
 fiaplab/
 └── /.cache
 |   └── fiaplab.db
