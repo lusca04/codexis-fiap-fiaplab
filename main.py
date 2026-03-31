@@ -1,18 +1,23 @@
-from database.Tabelas import init_db
-from Endpoints.Gerencia_Usuario import user_app
-from Endpoints.Login import login_app
 from flask import Flask, jsonify
+from api.database.Tabelas import init_db
+from api.Controllers.usuario_controller import user_app
+from api.Controllers.login_controller import login_app
+from api.Controllers.horario_controller import horario_app
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-app.register_blueprint(user_app)
-app.register_blueprint(login_app)
-app.register_blueprint(horario_app)
+    app.register_blueprint(user_app)
+    app.register_blueprint(login_app)
+    app.register_blueprint(horario_app)
 
-@app.route("/")
-def home():
-    return jsonify({"mensagem": "API rodando!"})
+    @app.route("/")
+    def home():
+        return jsonify({"mensagem": "API rodando!"})
+
+    return app
 
 if __name__ == "__main__":
     init_db()
+    app = create_app()
     app.run(debug=True)

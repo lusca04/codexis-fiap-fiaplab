@@ -1,13 +1,5 @@
 {
-    "Cpf": "12345678900",
+    "Id_Usuario": 1,
     "Nome": "Lucas Santos",
-    "Email": "lucas.admin@email.com",
-    "Rm": "0001",
-    "Ocupacao": "ADMINISTRADOR",
-    "Dt_Nascimento": "2000-05-10",
-    "Curso": "Gest\u00e3o de TI",
-    "Periodo": "Noturno",
-    "Dt_Formacao_Esperado": "2024-12-01",
-    "Dt_Cpu": "2026-03-31 02:00:28",
-    "Id_Usuario": 1
+    "Ocupacao": "ADMINISTRADOR"
 }
